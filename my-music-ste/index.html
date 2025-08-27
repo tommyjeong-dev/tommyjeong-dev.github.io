@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tommy's Music Space</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <img src="images/profile.jpg" alt="프로필 사진" class="profile-picture">
+            <div class="header-text-content">
+                <h1>Tommy's Music Space</h1>
+                <p class="intro-text">이곳은 Tommy의 음악을 나누는 공간입니다. 방문을 환영합니다!</p>
+            </div>
+        </div>
+        
+        <hr class="section-divider">
+        
+        <h2>음악 목록</h2>
+        
+        <ul class="song-list">
+            <li><a href="#" data-src="https://drive.google.com/uc?export=download&id=1j1VCxvMM2lvaJzDNM4-KBLvCONopjfH-">결국엔 괜찮아</a></li>
+            <li><a href="#" data-src="https://drive.google.com/uc?export=download&id=1_eiQ8NR7TrTLGS7AYu8cwmu3CDxEbvPR">스쳐본 사랑에 대한 질문</a></li>
+            <li><a href="#" data-src="https://drive.google.com/uc?export=download&id=1iC9XvXjrfS27fpel4jBtK_aVMlBrHdje">날 사랑하지 않는 너</a></li>
+        </ul>
+    </div>
+
+    <audio id="music-player" controls></audio>
+
+    <script>
+        const player = document.getElementById('music-player');
+        const songLinks = document.querySelectorAll('.song-list a');
+
+        songLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const songSrc = this.dataset.src;
+                player.src = songSrc;
+                player.play();
+            });
+        });
+    </script>
+</body>
+</html>
