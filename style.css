@@ -83,3 +83,31 @@ h2 {
     right: 20px;
     width: 300px;
 }
+/* --- 반응형 웹 디자인을 위한 미디어 쿼리 --- */
+@media (max-width: 768px) {
+    /* 화면 폭이 768px 이하일 때 (보통 태블릿, 스마트폰) 적용될 스타일 */
+
+    .profile-header {
+        flex-direction: column; /* 프로필 사진과 제목을 가로가 아닌 세로로 쌓음 */
+        align-items: center;    /* 가운데 정렬 */
+    }
+
+    .profile-picture {
+        margin-right: 0;        /* 사진 오른쪽 여백 제거 */
+        margin-bottom: 20px;    /* 사진 아래쪽에 새로운 여백 추가 */
+    }
+
+    h1 {
+        font-size: 1.8rem;      /* 스마트폰에서 제목 글씨 약간 작게 (rem 단위 추천) */
+    }
+
+    h1::after {
+        width: 100%;            /* 제목 아래 선이 삐져나오지 않도록 너비 조정 */
+    }
+
+    #music-player {
+        width: 90%;             /* 플레이어가 화면 밖으로 나가지 않도록 너비 조정 */
+        right: 5%;
+        left: 5%;
+    }
+}
