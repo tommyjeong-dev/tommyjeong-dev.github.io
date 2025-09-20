@@ -46,3 +46,16 @@ input { padding: 10px; font-size: 1em; background-color: #555; color: white; bor
 #add-song-form button[type="submit"]:hover {
     background-color: #2980b9; /* 마우스를 올렸을 때 약간 더 어두운 파란색으로 */
 }
+/* css/admin.css 파일 맨 아래에 추가 */
+
+.back-to-main-link {
+    display: inline-block;     /* 마진을 적용하기 위해 인라인-블록으로 설정 */
+    margin-bottom: 30px;       /* 아래 제목과의 간격 만들기 */
+    color: #bbb;                /* 기본 색상을 밝은 회색으로 */
+    text-decoration: none;     /* 밑줄 제거 */
+    transition: color 0.2s;      /* 부드러운 색상 전환 효과 */
+}
+
+.back-to-main-link:hover {
+    color: #fff;                /* 마우스를 올리면 흰색으로 변경 */
+}
