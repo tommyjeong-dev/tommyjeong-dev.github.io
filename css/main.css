@@ -1,0 +1,65 @@
+/* css/main.css - 메인 페이지 전용 */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 50px;
+    flex-shrink: 0;
+}
+.header-text-content {
+    flex-grow: 1;
+}
+.profile-header h1 {
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 10px;
+    position: relative;
+    color: white;
+    border: none;
+}
+.profile-header h1::after {
+    content: '';
+    display: block;
+    width: 80%;
+    height: 3px;
+    background-color: #555;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+h2.section-title {
+    text-align: left;
+    font-size: 24px;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+    color: #3498db;
+}
+h2.section-title::before {
+    counter-increment: heading-counter;
+    content: counter(heading-counter) ". ";
+    margin-right: 12px;
+    color: #3498db;
+    font-weight: bold;
+}
+.song-list li:hover {
+    transform: translateX(10px);
+    border-left-color: #2ecc71;
+}
+.song-list li.playing {
+    background-color: #8e44ad;
+    border-left-color: #9b59b6;
+}
+.song-list li.playing a, .song-list li.playing .song-title {
+    color: white;
+}
+.btn-add { background-color: #2ecc71; }
+.btn-add:hover { background-color: #27ae60; }

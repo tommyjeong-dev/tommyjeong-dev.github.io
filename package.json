@@ -1,0 +1,26 @@
+{
+  "name": "tommyjeog.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommyjeong-dev/tommyjeong-dev.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tommyjeong-dev/tommyjeong-dev.github.io/issues"
+  },
+  "homepage": "https://github.com/tommyjeong-dev/tommyjeong-dev.github.io#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
+}

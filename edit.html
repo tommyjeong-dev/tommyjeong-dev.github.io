@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지 - 노래 수정</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input { padding: 10px; font-size: 1em; background-color: #555; color: white; border: 1px solid #777; border-radius: 5px; }
+        button { padding: 15px; font-size: 1.1em; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>노래 정보 수정</h1>
+        
+        <form id="edit-song-form">
+            <input type="text" id="title" placeholder="노래 제목" required>
+            <input type="text" id="artist" placeholder="아티스트" required>
+            <input type="text" id="date" placeholder="발매일" required>
+            <input type="text" id="composer" placeholder="작곡가" required>
+            <input type="text" id="src" placeholder="음악 파일 경로" required>
+            
+            <button type="submit">변경사항 저장</button>
+        </form>
+    </div>
+
+    <script src="edit.js"></script>
+</body>
+</html>

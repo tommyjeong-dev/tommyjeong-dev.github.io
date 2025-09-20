@@ -1,0 +1,48 @@
+/* css/admin.css - 관리자 페이지 전용 */
+
+/* [수정] h1과 h2 제목 스타일 통일 및 번호 매기기 */
+h1.section-title, 
+h2.section-title {
+    font-size: 24px;  /* 1. 폰트 크기 통일 */
+    color: #f1c40f;   /* 2. 폰트 색상 노란색으로 변경 */
+    text-align: left;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+/* 3. 제목 왼쪽에 번호 추가 */
+h1.section-title::before, 
+h2.section-title::before {
+    counter-increment: heading-counter;
+    content: counter(heading-counter) ". ";
+    margin-right: 12px;
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+/* --- 이하 기존 코드 --- */
+form { display: flex; flex-direction: column; gap: 15px; }
+input { padding: 10px; font-size: 1em; background-color: #555; color: white; border: 1px solid #777; border-radius: 5px; }
+.btn-edit { background-color: #3498db; }
+.btn-edit:hover { background-color: #2980b9; }
+.btn-delete { background-color: #f39c12; }
+.btn-delete:hover { background-color: #e67e22; }
+
+/* css/admin.css 파일 맨 아래에 추가 */
+
+#add-song-form button[type="submit"] {
+    background-color: #3498db; /* 1. 배경색을 파란색으로 변경 */
+    font-size: 1.1em;      /* 2. 폰트 크기를 약간 줄임 */
+    padding: 12px;20px;         /* 2. 버튼 내부 여백을 조절해 크기 줄임 */
+    font-weight: bold;
+    transition: background-color 0.2s;
+    color: white;
+    align-self: flex-end;
+    border-radius: 8px;
+}
+
+#add-song-form button[type="submit"]:hover {
+    background-color: #2980b9; /* 마우스를 올렸을 때 약간 더 어두운 파란색으로 */
+}
