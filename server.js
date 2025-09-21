@@ -138,6 +138,52 @@ app.post('/api/playlists', async (req, res) => {
     }
 });
 
+// POST /api/playlists/:playlistId/songs : 특정 플레이리스트에 노래를 추가합니다.
+app.post('/api/playlists/:playlistId/songs', async (req, res) => {
+    try {
+        const playlistId = req.params.playlistId;
+        const { songId } = req.body;
+
+        const playlist = await Playlist.findByPk(playlistId);
+        const song = await Song.findByPk(songId);
+
+        if (!playlist || !song) {
+            return res.status(404).send("플레이리스트 또는 노래를 찾을 수 없습니다.");
+        }
+
+        // Sequelize의 관계 메서드를 사용해 플레이리스트에 노래를 추가합니다.
+        await playlist.addSong(song);
+
+        res.status(200).send("플레이리스트에 노래가 추가되었습니다.");
+
+    } catch (error) {
+        console.error("플레이리스트에 노래 추가 중 오류:", error);
+        res.status(500).send("플레이리스트에 노래를 추가하는 중 오류가 발생했습니다.");
+    }
+});
+
+// DELETE /api/playlists/:playlistId/songs/:songId : 특정 플레이리스트에서 특정 노래를 삭제
+app.delete('/api/playlists/:playlistId/songs/:songId', async (req, res) => {
+    try {
+        const { playlistId, songId } = req.params; // URL에서 두 ID를 모두 가져옴
+
+        const playlist = await Playlist.findByPk(playlistId);
+        const song = await Song.findByPk(songId);
+
+        if (!playlist || !song) {
+            return res.status(404).send("플레이리스트 또는 노래를 찾을 수 없습니다.");
+        }
+
+        // Sequelize의 관계 메서드를 사용해 플레이리스트에서 노래를 제거합니다.
+        await playlist.removeSong(song);
+
+        res.status(200).send("플레이리스트에서 노래가 삭제되었습니다.");
+
+    } catch (error) {
+        console.error("플레이리스트에서 노래 삭제 중 오류:", error);
+        res.status(500).send("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
+    }
+});
 // --- 서버 시작 및 초기 데이터 입력 ---
 app.listen(PORT, async () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);

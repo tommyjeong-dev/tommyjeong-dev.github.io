@@ -89,3 +89,15 @@ h2.section-title::before {
     border: 1px solid #777;
     border-radius: 5px;
 }
+.playlist-link {
+    display: block;
+    padding: 15px 0;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.playlist-link.active {
+    font-weight: bold;
+    color: #2ecc71; /* 활성화되었을 때의 색상 */
+}
