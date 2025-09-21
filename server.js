@@ -1,7 +1,7 @@
 // server.js (파일 업로드 기능이 추가된 전체 코드)
 
 const express = require('express');
-const { Song } = require('./database');
+const { Song, Playlist } = require('./database');
 const multer = require('multer'); // multer 가져오기
 const path = require('path'); // 파일 경로를 다루기 위한 path 모듈
 
@@ -27,6 +27,7 @@ app.use('/music-library', express.static(path.join(__dirname, 'music-library')))
 app.use(express.json());
 
 // --- API 엔드포인트 ---
+
 app.get('/api/songs', async (req, res) => {
     try {
         const songs = await Song.findAll();
@@ -106,6 +107,37 @@ app.put('/api/songs/:id', async (req, res) => {
         res.status(500).send("노래 정보를 수정하는 중 서버에서 오류가 발생했습니다.");
     }
 });
+
+// server.js 에 이어서 추가
+
+
+// --- 플레이리스트 API ---
+
+// GET /api/playlists: 모든 플레이리스트 목록을 가져옵니다.
+app.get('/api/playlists', async (req, res) => {
+    try {
+        const playlists = await Playlist.findAll();
+        res.json(playlists);
+    } catch (error) {
+        res.status(500).send("플레이리스트를 가져오는 중 오류가 발생했습니다.");
+    }
+});
+
+// POST /api/playlists: 새로운 플레이리스트를 생성합니다.
+app.post('/api/playlists', async (req, res) => {
+    try {
+        // 요청 본문(body)에서 name 값을 꺼냅니다.
+        const { name } = req.body;
+        if (!name) {
+            return res.status(400).send("플레이리스트 이름이 필요합니다.");
+        }
+        const newPlaylist = await Playlist.create({ name: name });
+        res.status(201).json(newPlaylist);
+    } catch (error) {
+        res.status(500).send("플레이리스트를 생성하는 중 오류가 발생했습니다.");
+    }
+});
+
 // --- 서버 시작 및 초기 데이터 입력 ---
 app.listen(PORT, async () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);

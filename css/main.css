@@ -71,3 +71,21 @@ h2.section-title::before {
     margin-top: 10px;   /* 제목과의 간격을 조금 줍니다. */
     color: #ccc;         /* 기본 흰색보다 약간 어둡게 하여 계층을 줍니다. */
 }
+
+/* css/main.css 파일 맨 아래에 추가 */
+
+.playlist-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.playlist-controls input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #555;
+    color: white;
+    border: 1px solid #777;
+    border-radius: 5px;
+}
