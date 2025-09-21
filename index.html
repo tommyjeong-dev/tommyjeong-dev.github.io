@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +19,13 @@
         
         <hr class="section-divider">
         
-       <h2 class="section-title">나만의 플레이리스트</h2>
-       <div class="playlist-controls">
+        <h2 class="section-title">나만의 플레이리스트</h2>
+        <div class="playlist-controls">
             <input type="text" id="new-playlist-name" placeholder="새 플레이리스트 이름">
             <button id="create-playlist-btn" class="btn btn-add">생성</button>
         </div>
         <ul class="song-list" id="my-playlist"></ul>
+        <div id="playlist-details"></div>
         
         <hr class="section-divider">
         
@@ -34,181 +35,205 @@
 
     <audio id="music-player" controls></audio>
     
-  <div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
+    <div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
         <a href="admin.html" style="color: #888; font-size: 0.9em;">관리자 페이지로 이동</a>
-    </div>  
+    </div>
 
-  <script>
-    // index.html <script> 태그 상단
-    let activePlaylistId = null; // 현재 선택된 플레이리스트 ID를 저장
-    // --- 1. 전역 변수 ---
-    let myPlaylistData = [];
+    <script>
+        // --- 1. 전역 변수 ---
+        let activePlaylistId = null;
 
-    const player = document.getElementById('music-player');
-    const mainSongListElement = document.getElementById('main-song-list');
-    const myPlaylistElement = document.getElementById('my-playlist');
-    const createPlaylistBtn = document.getElementById('create-playlist-btn');
-    const newPlaylistNameInput = document.getElementById('new-playlist-name');
+        const player = document.getElementById('music-player');
+        const mainSongListElement = document.getElementById('main-song-list');
+        const myPlaylistElement = document.getElementById('my-playlist');
+        const createPlaylistBtn = document.getElementById('create-playlist-btn');
+        const newPlaylistNameInput = document.getElementById('new-playlist-name');
+        const detailsContainer = document.getElementById('playlist-details');
+        const container = document.querySelector('.container');
 
-    // --- 2. 핵심 함수들 ---
-    function savePlaylist() { /* ... (기존과 동일) ... */ }
-    function loadPlaylist() { /* ... (기존과 동일) ... */ }
-   function renderMainList(songsData) {
-    
-    mainSongListElement.innerHTML = '';
-    songsData.forEach(song => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <div class="song-item-content">
-                <a href="#" class="play-link" data-src="${song.src}">
-                    <div class="song-info">
-                        <span class="song-title">${song.title}</span>
-                        <span class="song-meta">${song.artist} | ${song.composer} | ${song.date}</span>
-                    </div>
-                </a>
-            </div>
-            <button class="btn btn-add" data-song-id="${song.id}">추가</button>
-        `;
-        mainSongListElement.appendChild(listItem);
-    });
-}
-    
-    // 이전에 추가했던 renderPlaylist() 함수는 삭제하거나, 아래처럼 수정합니다.
-    function renderPlaylist() {
-        myPlaylistElement.innerHTML = '';
-        if (myPlaylistData.length === 0) return;
-        myPlaylistData.forEach(song => { /* ... (기존과 동일) ... */ });
-    }
-
-    // 새로 추가한 플레이리스트 목록 렌더링 함수
-    async function renderPlaylists() {
-    try {
-        const response = await fetch('/api/playlists');
-        const playlists = await response.json();
-        
-        myPlaylistElement.innerHTML = '';
-        playlists.forEach(playlist => {
-            const listItem = document.createElement('li');
-            // 각 플레이리스트를 a 태그로 만들고, data-id 속성에 고유 id를 저장
-            listItem.innerHTML = `<a href="#" class="playlist-link" data-id="${playlist.id}">${playlist.name}</a>`;
-            myPlaylistElement.appendChild(listItem);
-        });
-    } catch (error) {
-        console.error("플레이리스트를 불러오는 중 오류 발생:", error);
-    }
-}
-
-async function fetchAllSongs() {
-    try {
-        const response = await fetch('/api/songs');
-        const songsData = await response.json();
-
-        renderMainList(songsData);
-        setupEventListeners(songsData);
-    } catch (error) {
-        console.error("노래 목록을 가져오는 데 실패했습니다:", error);
-    }
-}
-
-    // --- 3. 이벤트 리스너 설정 함수 ---
-    function setupEventListeners(songsData) {
-
-    // 1. '노래 추가' 버튼 클릭 이벤트 (수정됨)
-    // index.html의 '노래 추가' 이벤트 리스너 부분을 아래 코드로 교체
-
-mainSongListElement.addEventListener('click', async function(event) {
-    if (event.target.matches('.btn-add')) {
-        const songId = event.target.dataset.songId;
-
-        // --- 디버깅 코드 추가 ---
-        console.log("선택된 플레이리스트 ID:", activePlaylistId);
-        console.log("추가하려는 노래 ID:", songId);
-        // --------------------
-
-        if (!activePlaylistId) {
-            alert('노래를 추가할 플레이리스트를 먼저 선택해주세요.');
-            return;
+        // --- 2. 렌더링 함수 (화면 그리기) ---
+        function renderMainList(songsData) {
+            mainSongListElement.innerHTML = '';
+            songsData.forEach(song => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <a href="#" class="play-link" data-src="${song.src}">
+                        <div class="song-info">
+                            <span class="song-title">${song.title}</span>
+                            <span class="song-meta">${song.artist} | ${song.composer} | ${song.date}</span>
+                        </div>
+                    </a>
+                    <button class="btn btn-add" data-song-id="${song.id}">추가</button>
+                `;
+                mainSongListElement.appendChild(listItem);
+            });
         }
-        
-        try {
-            const response = await fetch(`/api/playlists/${activePlaylistId}/songs`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ songId: songId })
+
+        function renderPlaylists(playlists) {
+            myPlaylistElement.innerHTML = '';
+            playlists.forEach(playlist => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<a href="#" class="playlist-link" data-id="${playlist.id}">${playlist.name}</a>`;
+                myPlaylistElement.appendChild(listItem);
+            });
+        }
+
+        function renderPlaylistDetails(playlist) {
+            detailsContainer.innerHTML = ''; 
+            const titleElement = document.createElement('h3');
+            titleElement.textContent = `[${playlist.name}] 수록곡`;
+            detailsContainer.appendChild(titleElement);
+
+            const songsUl = document.createElement('ul');
+            songsUl.className = 'song-list';
+            
+            if (playlist.Songs && playlist.Songs.length > 0) {
+                playlist.Songs.forEach(song => {
+                    const songLi = document.createElement('li');
+                    songLi.innerHTML = `
+                        <div class="song-info">
+                            <span class="song-title">${song.title}</span>
+                            <span class="song-meta">${song.artist} | ${song.composer}</span>
+                        </div>
+                        <button class="btn btn-delete" data-song-id="${song.id}">삭제</button>
+                    `;
+                    songsUl.appendChild(songLi);
+                });
+            } else {
+                songsUl.innerHTML = '<li>담긴 노래가 없습니다.</li>';
+            }
+            detailsContainer.appendChild(songsUl);
+        }
+
+        // --- 3. 데이터 통신 함수 (서버와 대화) ---
+        async function fetchAllSongs() {
+            try {
+                const response = await fetch('/api/songs');
+                return await response.json();
+            } catch (error) {
+                console.error("노래 목록을 가져오는 데 실패했습니다:", error);
+                return [];
+            }
+        }
+
+        async function fetchPlaylists() {
+            try {
+                const response = await fetch('/api/playlists');
+                return await response.json();
+            } catch (error) {
+                console.error("플레이리스트를 불러오는 중 오류 발생:", error);
+                return [];
+            }
+        }
+
+        // --- 4. 이벤트 처리 ---
+        function setupEventListeners(songsData) {
+            container.addEventListener('click', async function(event) {
+                const target = event.target;
+
+                // 노래 재생
+                const playLink = target.closest('a.play-link');
+                if (playLink) {
+                    event.preventDefault();
+                    document.querySelectorAll('.song-list li').forEach(item => item.classList.remove('playing'));
+                    playLink.closest('li').classList.add('playing');
+                    player.src = playLink.dataset.src;
+                    player.play();
+                    return;
+                }
+
+                // 플레이리스트 선택
+                const playlistLink = target.closest('.playlist-link');
+                if (playlistLink) {
+                    event.preventDefault();
+                    document.querySelectorAll('.playlist-link').forEach(link => link.classList.remove('active'));
+                    playlistLink.classList.add('active');
+                    activePlaylistId = playlistLink.dataset.id;
+                    const response = await fetch(`/api/playlists/${activePlaylistId}`);
+                    const playlist = await response.json();
+                    renderPlaylistDetails(playlist);
+                    return;
+                }
+
+                // 노래 추가
+                if (target.matches('.btn-add')) {
+                    if (!activePlaylistId) {
+                        alert('노래를 추가할 플레이리스트를 먼저 선택해주세요.');
+                        return;
+                    }
+                    const songId = target.dataset.songId;
+                    try {
+                        const response = await fetch(`/api/playlists/${activePlaylistId}/songs`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ songId: songId })
+                        });
+                        if (response.ok) {
+                            alert('플레이리스트에 노래가 추가되었습니다.');
+                            const updatedPlaylist = await (await fetch(`/api/playlists/${activePlaylistId}`)).json();
+                            renderPlaylistDetails(updatedPlaylist);
+                        } else {
+                            alert('노래 추가에 실패했습니다.');
+                        }
+                    } catch (error) { console.error('플레이리스트에 노래 추가 오류:', error); }
+                    return;
+                }
+
+                // 플레이리스트에서 노래 삭제
+                if (target.matches('.btn-delete')) {
+                    const songId = target.dataset.songId;
+                    if (confirm('정말로 이 노래를 플레이리스트에서 삭제하시겠습니까?')) {
+                        try {
+                            const response = await fetch(`/api/playlists/${activePlaylistId}/songs/${songId}`, {
+                                method: 'DELETE'
+                            });
+                            if (response.ok) {
+                                const updatedPlaylist = await (await fetch(`/api/playlists/${activePlaylistId}`)).json();
+                                renderPlaylistDetails(updatedPlaylist);
+                            } else {
+                                alert('삭제에 실패했습니다.');
+                            }
+                        } catch (error) { console.error('삭제 오류:', error); }
+                    }
+                    return;
+                }
             });
 
-            if (response.ok) {
-                alert('플레이리스트에 노래가 추가되었습니다.');
-            } else {
-                alert('노래 추가에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('플레이리스트에 노래 추가 오류:', error);
-        }
-    }
-});
-
-    // 2. '플레이리스트' 이름 클릭 이벤트 (새로 추가됨)
-    myPlaylistElement.addEventListener('click', function(event) {
-        const playlistLink = event.target.closest('.playlist-link');
-        if (playlistLink) {
-            event.preventDefault();
-            
-            // 모든 링크에서 'active' 스타일 제거
-            document.querySelectorAll('.playlist-link').forEach(link => link.classList.remove('active'));
-            
-            // 지금 클릭한 링크에만 'active' 스타일 추가
-            playlistLink.classList.add('active');
-            
-            // 활성화된 플레이리스트 ID를 전역 변수에 저장
-            activePlaylistId = playlistLink.dataset.id;
-        }
-    });
-
-    // 3. '노래 재생' 클릭 이벤트 (그대로 둠)
-    const container = document.querySelector('.container');
-    container.addEventListener('click', function(event) {
-        const playLink = event.target.closest('a.play-link');
-        if (playLink) {
-            event.preventDefault();
-            document.querySelectorAll('.song-list li').forEach(item => item.classList.remove('playing'));
-            playLink.closest('li').classList.add('playing');
-            player.src = playLink.dataset.src;
-            player.play();
-        }
-    });
-
-    // 4. '플레이리스트 생성' 클릭 이벤트 (그대로 둠)
-    createPlaylistBtn.addEventListener('click', async () => {
-        const name = newPlaylistNameInput.value;
-        if (!name) {
-            alert('플레이리스트 이름을 입력해주세요.');
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/playlists', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name })
+            createPlaylistBtn.addEventListener('click', async () => {
+                const name = newPlaylistNameInput.value;
+                if (!name) {
+                    alert('플레이리스트 이름을 입력해주세요.');
+                    return;
+                }
+                try {
+                    const response = await fetch('/api/playlists', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: name })
+                    });
+                    if (response.ok) {
+                        newPlaylistNameInput.value = '';
+                        const playlists = await fetchPlaylists();
+                        renderPlaylists(playlists);
+                    } else {
+                        alert('플레이리스트 생성에 실패했습니다.');
+                    }
+                } catch (error) { console.error('플레이리스트 생성 오류:', error); }
             });
-
-            if (response.ok) {
-                newPlaylistNameInput.value = ''; 
-                renderPlaylists(); 
-            } else {
-                alert('플레이리스트 생성에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('플레이리스트 생성 오류:', error);
         }
-    });
-}
 
-    // --- 4. 초기 실행 ---
-    renderPlaylists();
-    fetchAllSongs();
+        // --- 5. 초기 실행 ---
+        async function init() {
+            const playlists = await fetchPlaylists();
+            renderPlaylists(playlists);
 
-</script>
+            const songsData = await fetchAllSongs();
+            renderMainList(songsData);
+            
+            setupEventListeners(songsData);
+        }
+
+        init();
+    </script>
 </body>
 </html>

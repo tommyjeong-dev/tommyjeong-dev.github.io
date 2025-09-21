@@ -101,3 +101,17 @@ h2.section-title::before {
     font-weight: bold;
     color: #2ecc71; /* 활성화되었을 때의 색상 */
 }
+
+/* css/main.css 파일 맨 아래에 추가 */
+
+#playlist-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 5px;
+}
+
+#playlist-details h3 {
+    margin-top: 0;
+    color: #2ecc71; /* 녹색 계열 */
+}

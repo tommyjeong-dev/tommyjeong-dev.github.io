@@ -137,6 +137,23 @@ app.post('/api/playlists', async (req, res) => {
         res.status(500).send("플레이리스트를 생성하는 중 오류가 발생했습니다.");
     }
 });
+// GET /api/playlists/:id : 특정 플레이리스트의 정보와 담긴 노래 목록을 함께 가져옴
+app.get('/api/playlists/:id', async (req, res) => {
+    try {
+        const playlistId = req.params.id;
+        const playlist = await Playlist.findByPk(playlistId, {
+            include: Song // 관계가 설정된 Song 모델을 포함시킴
+        });
+
+        if (playlist) {
+            res.json(playlist);
+        } else {
+            res.status(404).send("플레이리스트를 찾을 수 없습니다.");
+        }
+    } catch (error) {
+        res.status(500).send("플레이리스트 정보를 가져오는 중 오류가 발생했습니다.");
+    }
+});
 
 // POST /api/playlists/:playlistId/songs : 특정 플레이리스트에 노래를 추가합니다.
 app.post('/api/playlists/:playlistId/songs', async (req, res) => {
