@@ -115,3 +115,24 @@ h2.section-title::before {
     margin-top: 0;
     color: #2ecc71; /* 녹색 계열 */
 }
+/* css/main.css 파일 맨 아래에 추가 */
+
+#playlist-details:empty {
+    display: none;
+}
+
+/* css/main.css 파일 맨 아래에 추가 */
+
+/* 1. '음악 목록'에서 사용할 카운터 초기화 */
+#main-song-list {
+    counter-reset: song-counter;
+}
+
+/* 2. '음악 목록'의 각 노래 링크 앞에 번호 표시 */
+#main-song-list .play-link::before {
+    counter-increment: song-counter;
+    content: counter(song-counter) ". ";
+    font-weight: bold;
+    margin-right: 10px;
+    color: #bbb; /* 플레이리스트 번호와 동일한 스타일 적용 */
+}

@@ -39,8 +39,13 @@ app.get('/api/songs', async (req, res) => {
 
 app.post('/api/songs', upload.single('songFile'), async (req, res) => {
     try {
+        // --- 추가된 안전장치 ---
+        if (!req.file) {
+            return res.status(400).send("음악 파일이 업로드되지 않았습니다.");
+        }
+        // --------------------
+
         const { title, artist, date, composer } = req.body;
-        // 업로드된 파일의 웹 접근 가능 경로를 사용
         const src = path.join('music-library', req.file.filename).replace(/\\/g, "/");
         
         const song = await Song.create({ title, artist, date, composer, src });

@@ -95,12 +95,14 @@
                 playlist.Songs.forEach(song => {
                     const songLi = document.createElement('li');
                     songLi.innerHTML = `
-                        <div class="song-info">
-                            <span class="song-title">${song.title}</span>
-                            <span class="song-meta">${song.artist} | ${song.composer}</span>
-                        </div>
-                        <button class="btn btn-delete" data-song-id="${song.id}">삭제</button>
-                    `;
+    <a href="#" class="play-link" data-src="${song.src}">
+        <div class="song-info">
+            <span class="song-title">${song.title}</span>
+            <span class="song-meta">${song.artist} | ${song.composer} | ${song.date}</span>
+        </div>
+    </a>
+    <button class="btn btn-delete" data-song-id="${song.id}">삭제</button>
+`;
                     songsUl.appendChild(songLi);
                 });
             } else {

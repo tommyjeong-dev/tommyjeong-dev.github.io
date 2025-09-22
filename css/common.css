@@ -43,7 +43,7 @@ body {
 .song-list li a.play-link {
     flex-grow: 1;
     display: flex;
-    justify-content: space-between;
+    jjustify-content: flex-start; /* 왼쪽부터 차례대로 정렬 */
     align-items: center;
     padding: 15px 0;
     padding-right: 15px;
@@ -86,6 +86,13 @@ body {
     display: flex;
     gap: 10px;
 }
+#my-playlist {
+    counter-reset: playlist-counter; /* playlist-counter라는 이름의 카운터를 0으로 초기화 */
+}
+
+#my-playlist:empty::after {
+    /* ... (기존 코드) ... */
+}
 
 #my-playlist:empty::after {
     content: "아직 추가된 노래가 없습니다.";
@@ -115,3 +122,11 @@ body {
     color: black;              /* 마우스를 올려도 검은색 유지 */
 }
 
+/* 플레이리스트 링크 앞에 번호를 표시 */
+.playlist-link::before {
+    counter-increment: playlist-counter; /* 카운터 숫자를 1 증가시킴 */
+    content: counter(playlist-counter) ". "; /* "1. ", "2. " 형태로 내용을 채움 */
+    font-weight: bold;
+    margin-right: 10px;
+    color: #bbb; /* 번호 색상 */
+}
