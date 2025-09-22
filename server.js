@@ -1,7 +1,7 @@
 // server.js (파일 업로드 기능이 추가된 전체 코드)
 
 const express = require('express');
-const { Song, Playlist } = require('./database');
+const { Song, Playlist, sequelize } = require('./database');
 const multer = require('multer'); // multer 가져오기
 const path = require('path'); // 파일 경로를 다루기 위한 path 모듈
 

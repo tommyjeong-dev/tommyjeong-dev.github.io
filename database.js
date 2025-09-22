@@ -1,5 +1,4 @@
-// database.js (여러 플레이리스트를 지원하도록 업그레이드)
-
+// database.js (최종 수정본)
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize({
@@ -7,37 +6,27 @@ const sequelize = new Sequelize({
     storage: './database.sqlite'
 });
 
-// 'Song' 모델 정의 (기존과 동일)
 const Song = sequelize.define('Song', {
     title: { type: DataTypes.STRING, allowNull: false },
     date: { type: DataTypes.STRING },
     artist: { type: DataTypes.STRING },
     composer: { type: DataTypes.STRING },
     src: { type: DataTypes.STRING, allowNull: false },
-    lyrics: { type: DataTypes.TEXT } // <-- 가사 저장을 위한 칸 추가
+    lyrics: { type: DataTypes.TEXT }
 });
 
-// --- 추가된 부분 ---
-// 'Playlist' 모델 (새로운 '책장')을 정의합니다.
 const Playlist = sequelize.define('Playlist', {
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
+    name: { type: DataTypes.STRING, allowNull: false }
 });
 
-// --- 관계 설정 (가장 중요!) ---
-// 노래와 플레이리스트는 '다대다(Many-to-Many)' 관계입니다.
-// 하나의 노래는 여러 플레이리스트에 속할 수 있고,
-// 하나의 플레이리스트는 여러 노래를 가질 수 있습니다.
-// 'PlaylistSongs'라는 중간 테이블을 통해 이 관계를 관리합니다.
-Song.belongsToMany(Playlist, { through: 'PlaylistSongs' });
-Playlist.belongsToMany(Song, { through: 'PlaylistSongs' });
-// --------------------
+// 중간 테이블을 직접 정의하여 불필요한 제약조건을 피합니다.
+const PlaylistSongs = sequelize.define('PlaylistSongs', {});
 
-// 설계도를 바탕으로 실제 데이터베이스 파일을 동기화합니다.
-// { alter: true } 옵션은 기존 데이터(노래 목록)를 유지하면서 변경사항을 적용합니다.
-sequelize.sync({ alter: true });
+Song.belongsToMany(Playlist, { through: PlaylistSongs });
+Playlist.belongsToMany(Song, { through: PlaylistSongs });
 
-// 다른 파일에서 Song과 Playlist 모델을 모두 사용할 수 있도록 내보냅니다.
+// { force: true } 옵션은 서버가 시작될 때마다 테이블을 모두 지우고 새로 만듭니다.
+// 개발 초기 단계에서 구조를 자주 바꿀 때 유용합니다.
+sequelize.sync();
+
 module.exports = { Song, Playlist, sequelize };
