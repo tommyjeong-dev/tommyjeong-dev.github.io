@@ -35,9 +35,19 @@ listItem.innerHTML = `
 }
 
 // '새 노래 추가' 폼 제출 이벤트 리스너 (기존과 동일)
+// admin.js
+
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
-    const formData = new FormData(form);
+
+    // FormData 객체를 새로 만들고 각 필드를 직접 추가합니다.
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('artist', document.getElementById('artist').value);
+    formData.append('date', document.getElementById('date').value);
+    formData.append('composer', document.getElementById('composer').value);
+    formData.append('lyrics', document.getElementById('lyrics').value); // <-- 가사 추가
+    formData.append('songFile', document.getElementById('songFile').files[0]);
     
     try {
         const response = await fetch('/api/songs', {
@@ -48,7 +58,7 @@ form.addEventListener('submit', async function(event) {
         if (response.ok) {
             alert('노래가 성공적으로 추가되었습니다!');
             form.reset();
-            fetchAndRenderSongs(); // 노래 추가 후 목록을 새로고침합니다.
+            fetchAndRenderSongs(); // 노래 추가 후 목록을 새로고침
         } else {
             alert('업로드에 실패했습니다.');
         }

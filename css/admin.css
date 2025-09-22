@@ -59,3 +59,14 @@ input { padding: 10px; font-size: 1em; background-color: #555; color: white; bor
 .back-to-main-link:hover {
     color: #fff;                /* 마우스를 올리면 흰색으로 변경 */
 }
+
+textarea {
+    padding: 10px;
+    font-size: 1em;
+    font-family: 'Noto Sans KR', sans-serif; /* 폰트 통일 */
+    background-color: #555;
+    color: white;
+    border: 1px solid #777;
+    border-radius: 5px;
+    resize: vertical; /* 세로 크기만 조절 가능하도록 설정 */
+}
