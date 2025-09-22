@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         dateInput.value = song.date;
         composerInput.value = song.composer;
         srcInput.value = song.src;
+        document.getElementById('lyrics').value = song.lyrics || ''; // <-- 가사 채우기 추가
 
     } catch (error) {
         console.error('Error:', error);
@@ -41,7 +42,8 @@ form.addEventListener('submit', async function(event) {
         artist: artistInput.value,
         date: dateInput.value,
         composer: composerInput.value,
-        src: srcInput.value
+        src: srcInput.value, 
+        lyrics: document.getElementById('lyrics').value // <-- 가사 보내기 추가
     };
 
     try {

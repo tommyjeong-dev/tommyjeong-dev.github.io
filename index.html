@@ -38,10 +38,19 @@
     <div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
         <a href="admin.html" style="color: #888; font-size: 0.9em;">관리자 페이지로 이동</a>
     </div>
+<div id="lyrics-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h3 id="modal-song-title"></h3>
+            <pre id="modal-lyrics-content"></pre>
+        </div>
+    </div>
+
 
 <script>
     // --- 1. 전역 변수 ---
     let activePlaylistId = null;
+
     const player = document.getElementById('music-player');
     const mainSongListElement = document.getElementById('main-song-list');
     const myPlaylistElement = document.getElementById('my-playlist');
@@ -49,6 +58,7 @@
     const newPlaylistNameInput = document.getElementById('new-playlist-name');
     const detailsContainer = document.getElementById('playlist-details');
     const container = document.querySelector('.container');
+    const modal = document.getElementById('lyrics-modal');
 
     // --- 2. 렌더링 함수 (화면 그리기) ---
     function renderMainList(songsData) {
@@ -62,56 +72,59 @@
                         <span class="song-meta">${song.artist} | ${song.composer} | ${song.date}</span>
                     </div>
                 </a>
-                <button class="btn btn-add" data-song-id="${song.id}">추가</button>
+                <div class="buttons">
+                    <button class="btn btn-lyrics" data-song-id="${song.id}">가사</button>
+                    <button class="btn btn-add" data-song-id="${song.id}">추가</button>
+                </div>
             `;
             mainSongListElement.appendChild(listItem);
         });
     }
 
-    async function renderPlaylists(playlists) {
+    function renderPlaylists(playlists) {
         myPlaylistElement.innerHTML = '';
         playlists.forEach(playlist => {
             const listItem = document.createElement('li');
-            listItem.innerHTML = `<a href="#" class="playlist-link" data-id="${playlist.id}">${playlist.name}</a>`;
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = 'playlist-link';
+            link.dataset.id = playlist.id;
+            link.textContent = playlist.name;
+            if (playlist.id == activePlaylistId) { // ==를 사용하여 문자열과 숫자 비교
+                link.classList.add('active');
+            }
+            listItem.appendChild(link);
             myPlaylistElement.appendChild(listItem);
         });
     }
 
-    async function showPlaylistDetails(playlistId) {
-        if (!playlistId) {
-            detailsContainer.innerHTML = '';
-            return;
+    function renderPlaylistDetails(playlist) {
+        detailsContainer.innerHTML = '';
+        const titleElement = document.createElement('h3');
+        titleElement.textContent = `[${playlist.name}] 수록곡`;
+        detailsContainer.appendChild(titleElement);
+
+        const songsUl = document.createElement('ul');
+        songsUl.className = 'song-list';
+
+        if (playlist.Songs && playlist.Songs.length > 0) {
+            playlist.Songs.forEach(song => {
+                const songLi = document.createElement('li');
+                songLi.innerHTML = `
+                    <a href="#" class="play-link" data-src="${song.src}">
+                        <div class="song-info">
+                            <span class="song-title">${song.title}</span>
+                            <span class="song-meta">${song.artist} | ${song.composer}</span>
+                        </div>
+                    </a>
+                    <button class="btn btn-delete" data-song-id="${song.id}">삭제</button>
+                `;
+                songsUl.appendChild(songLi);
+            });
+        } else {
+            songsUl.innerHTML = '<li>담긴 노래가 없습니다.</li>';
         }
-        try {
-            const response = await fetch(`/api/playlists/${playlistId}`);
-            const playlist = await response.json();
-            detailsContainer.innerHTML = '';
-            const titleElement = document.createElement('h3');
-            titleElement.textContent = `[${playlist.name}] 수록곡`;
-            detailsContainer.appendChild(titleElement);
-            const songsUl = document.createElement('ul');
-            songsUl.className = 'song-list';
-            if (playlist.Songs && playlist.Songs.length > 0) {
-                playlist.Songs.forEach(song => {
-                    const songLi = document.createElement('li');
-                    songLi.innerHTML = `
-    <a href="#" class="play-link" data-src="${song.src}">
-        <div class="song-info">
-            <span class="song-title">${song.title}</span>
-            <span class="song-meta">${song.artist} | ${song.composer} | ${song.date}</span>
-        </div>
-    </a>
-    <button class="btn btn-delete" data-song-id="${song.id}">삭제</button>
-`;
-                    songsUl.appendChild(songLi);
-                });
-            } else {
-                songsUl.innerHTML = '<li>담긴 노래가 없습니다.</li>';
-            }
-            detailsContainer.appendChild(songsUl);
-        } catch (error) {
-            console.error('플레이리스트 상세 정보 로딩 오류:', error);
-        }
+        detailsContainer.appendChild(songsUl);
     }
 
     // --- 3. 데이터 통신 함수 (서버와 대화) ---
@@ -137,10 +150,11 @@
 
     // --- 4. 이벤트 처리 ---
     function setupEventListeners(songsData) {
+        // [개선] 여러 이벤트 리스너를 하나로 통합하여 효율적으로 관리
         container.addEventListener('click', async function(event) {
             const target = event.target;
 
-            // 노래 재생
+            // 노래 재생 (a.play-link)
             const playLink = target.closest('a.play-link');
             if (playLink) {
                 event.preventDefault();
@@ -151,26 +165,42 @@
                 return;
             }
 
-            // 플레이리스트 선택 (토글 기능)
+            // 플레이리스트 선택 (.playlist-link)
             const playlistLink = target.closest('.playlist-link');
             if (playlistLink) {
                 event.preventDefault();
                 const isAlreadyActive = playlistLink.classList.contains('active');
-                
                 document.querySelectorAll('.playlist-link').forEach(link => link.classList.remove('active'));
-                
-                if (!isAlreadyActive) {
+
+                if (isAlreadyActive) {
+                    activePlaylistId = null;
+                    detailsContainer.innerHTML = '';
+                } else {
                     playlistLink.classList.add('active');
                     activePlaylistId = playlistLink.dataset.id;
-                    showPlaylistDetails(activePlaylistId);
-                } else {
-                    activePlaylistId = null;
-                    showPlaylistDetails(null);
+                    const response = await fetch(`/api/playlists/${activePlaylistId}`);
+                    const playlist = await response.json();
+                    renderPlaylistDetails(playlist);
+                }
+                return;
+            }
+            
+            // 가사 버튼 클릭 (.btn-lyrics)
+            if (target.matches('.btn-lyrics')) {
+                const songId = target.dataset.songId;
+                try {
+                    const response = await fetch(`/api/songs/${songId}`);
+                    const song = await response.json();
+                    document.getElementById('modal-song-title').textContent = song.title;
+                    document.getElementById('modal-lyrics-content').textContent = song.lyrics || "가사 정보가 없습니다.";
+                    modal.classList.add('visible');
+                } catch (error) {
+                    console.error("가사를 불러오는 중 오류 발생:", error);
                 }
                 return;
             }
 
-            // 플레이리스트에 노래 추가
+            // 노래 추가 버튼 클릭 (.btn-add)
             if (target.matches('.btn-add')) {
                 if (!activePlaylistId) {
                     alert('노래를 추가할 플레이리스트를 먼저 선택해주세요.');
@@ -185,7 +215,8 @@
                     });
                     if (response.ok) {
                         alert('플레이리스트에 노래가 추가되었습니다.');
-                        showPlaylistDetails(activePlaylistId);
+                        const updatedPlaylist = await (await fetch(`/api/playlists/${activePlaylistId}`)).json();
+                        renderPlaylistDetails(updatedPlaylist);
                     } else {
                         alert('노래 추가에 실패했습니다.');
                     }
@@ -193,7 +224,7 @@
                 return;
             }
 
-            // 플레이리스트에서 노래 삭제
+            // 플레이리스트에서 노래 삭제 버튼 클릭 (.btn-delete)
             if (target.matches('.btn-delete')) {
                 const songId = target.dataset.songId;
                 if (confirm('정말로 이 노래를 플레이리스트에서 삭제하시겠습니까?')) {
@@ -202,7 +233,8 @@
                             method: 'DELETE'
                         });
                         if (response.ok) {
-                            showPlaylistDetails(activePlaylistId);
+                            const updatedPlaylist = await (await fetch(`/api/playlists/${activePlaylistId}`)).json();
+                            renderPlaylistDetails(updatedPlaylist);
                         } else {
                             alert('삭제에 실패했습니다.');
                         }
@@ -212,6 +244,7 @@
             }
         });
 
+        // 플레이리스트 생성 버튼
         createPlaylistBtn.addEventListener('click', async () => {
             const name = newPlaylistNameInput.value;
             if (!name) {
@@ -232,6 +265,13 @@
                     alert('플레이리스트 생성에 실패했습니다.');
                 }
             } catch (error) { console.error('플레이리스트 생성 오류:', error); }
+        });
+
+        // 가사 모달 닫기
+        modal.addEventListener('click', function(event) {
+            if (event.target.matches('.close-btn') || event.target === modal) {
+                modal.classList.remove('visible');
+            }
         });
     }
 

@@ -144,4 +144,10 @@ body {
     color: #bbb; /* 번호 색상 */
 }
 
-/* css/common.css 파일 맨 아래에 추가 */
+.btn-lyrics {
+    background-color: #1abc9c; /* 청록색 계열 */
+}
+
+.btn-lyrics:hover {
+    background-color: #16a085;
+}

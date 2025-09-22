@@ -136,3 +136,60 @@ h2.section-title::before {
     margin-right: 10px;
     color: #bbb; /* 플레이리스트 번호와 동일한 스타일 적용 */
 }
+
+/* css/main.css 파일 맨 아래에 추가 */
+
+/* 모달 배경 (반투명 검은색) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden; /* 평소에는 숨겨둠 */
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+/* 모달이 보여질 때의 스타일 */
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 모달 콘텐츠 박스 */
+.modal-content {
+    background-color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto; /* 가사가 길면 스크롤 */
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 닫기 버튼 */
+.modal-content .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+/* 가사 내용 */
+#modal-lyrics-content {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #eee;
+    white-space: pre-wrap; /* 자동 줄바꿈 */
+    line-height: 1.6;
+}
