@@ -3,16 +3,29 @@
 
 /* --- 1. 기본 및 레이아웃 스타일 --- */
 body {
-    background-color: #333;
+    counter-reset: heading-counter;
     color: white;
     font-family: 'Noto Sans KR', sans-serif;
+    background-image: url('../images/background.jpg'); /* 배경 이미지 경로 */
+    background-size: cover; /* 화면에 꽉 차게 */
+    background-attachment: fixed; /* 스크롤해도 배경은 고정 */
 }
+
+/* css/common.css */
 
 .container {
     counter-reset: heading-counter;
     width: 80%;
     max-width: 900px;
     margin: 40px auto;
+    
+    /* --- 유리 질감 효과 --- */
+    background-color: rgba(0, 0, 0, 0.8); /* 살짝 비치는 어두운 배경 */
+    backdrop-filter: blur(10px); /* 배경을 흐리게 만드는 핵심 속성 */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* 얇은 테두리 */
+    border-radius: 15px; /* 모서리를 더 둥글게 */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* 은은한 그림자 */
+    padding: 30px; /* 내부 여백 */
 }
 
 .section-divider {
@@ -130,3 +143,5 @@ body {
     margin-right: 10px;
     color: #bbb; /* 번호 색상 */
 }
+
+/* css/common.css 파일 맨 아래에 추가 */

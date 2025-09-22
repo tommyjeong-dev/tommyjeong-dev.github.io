@@ -39,16 +39,14 @@ app.get('/api/songs', async (req, res) => {
 
 app.post('/api/songs', upload.single('songFile'), async (req, res) => {
     try {
-        // --- 추가된 안전장치 ---
         if (!req.file) {
             return res.status(400).send("음악 파일이 업로드되지 않았습니다.");
         }
-        // --------------------
 
-        const { title, artist, date, composer } = req.body;
+        const { title, artist, date, composer, lyrics } = req.body; // <-- 1. lyrics 추가
         const src = path.join('music-library', req.file.filename).replace(/\\/g, "/");
         
-        const song = await Song.create({ title, artist, date, composer, src });
+        const song = await Song.create({ title, artist, date, composer, src, lyrics }); // <-- 2. lyrics 추가
         res.status(201).json(song);
     } catch (error) {
         console.error(error);

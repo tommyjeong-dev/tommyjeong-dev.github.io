@@ -13,7 +13,8 @@ const Song = sequelize.define('Song', {
     date: { type: DataTypes.STRING },
     artist: { type: DataTypes.STRING },
     composer: { type: DataTypes.STRING },
-    src: { type: DataTypes.STRING, allowNull: false }
+    src: { type: DataTypes.STRING, allowNull: false },
+    lyrics: { type: DataTypes.TEXT } // <-- 가사 저장을 위한 칸 추가
 });
 
 // --- 추가된 부분 ---
