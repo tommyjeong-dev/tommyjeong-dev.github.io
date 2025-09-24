@@ -204,7 +204,19 @@ app.delete('/api/playlists/:playlistId/songs/:songId', async (req, res) => {
         res.status(500).send("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
     }
 });
-// server.js 에 추가
+
+// GET /api/songs/genre/:genreName : 특정 장르의 모든 노래를 가져옵니다.
+app.get('/api/songs/genre/:genreName', async (req, res) => {
+    try {
+        const genreName = req.params.genreName;
+        const songs = await Song.findAll({
+            where: { genre: genreName } // genre 컬럼이 일치하는 노래만 찾음
+        });
+        res.json(songs);
+    } catch (error) {
+        res.status(500).send("장르별 노래 목록을 가져오는 중 오류가 발생했습니다.");
+    }
+});
 
 // GET /api/genres : 모든 노래에서 중복 없는 장르 목록을 가져옵니다.
 app.get('/api/genres', async (req, res) => {

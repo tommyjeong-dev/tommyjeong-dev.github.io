@@ -193,3 +193,27 @@ h2.section-title::before {
     white-space: pre-wrap; /* 자동 줄바꿈 */
     line-height: 1.6;
 }
+
+/* css/main.css 파일 맨 아래에 추가 */
+
+.genre-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.genre-btn {
+    background-color: #555;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid #777;
+}
+
+.genre-btn:hover, .genre-btn.active {
+    background-color: #2ecc71; /* 녹색 계열 */
+    border-color: #2ecc71;
+}
