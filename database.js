@@ -11,6 +11,7 @@ const Song = sequelize.define('Song', {
     date: { type: DataTypes.STRING },
     artist: { type: DataTypes.STRING },
     composer: { type: DataTypes.STRING },
+    genre: { type: DataTypes.STRING }, // <-- 장르 저장을 위한 칸 추가
     src: { type: DataTypes.STRING, allowNull: false },
     lyrics: { type: DataTypes.TEXT }
 });

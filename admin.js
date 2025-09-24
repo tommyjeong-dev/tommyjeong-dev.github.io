@@ -46,6 +46,7 @@ form.addEventListener('submit', async function(event) {
     formData.append('artist', document.getElementById('artist').value);
     formData.append('date', document.getElementById('date').value);
     formData.append('composer', document.getElementById('composer').value);
+    formData.append('genre', document.getElementById('genre').value); // <-- 이 줄 추가
     formData.append('lyrics', document.getElementById('lyrics').value); // <-- 가사 추가
     formData.append('songFile', document.getElementById('songFile').files[0]);
     

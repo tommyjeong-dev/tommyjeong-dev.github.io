@@ -43,10 +43,10 @@ app.post('/api/songs', upload.single('songFile'), async (req, res) => {
             return res.status(400).send("음악 파일이 업로드되지 않았습니다.");
         }
 
-        const { title, artist, date, composer, lyrics } = req.body; // <-- 1. lyrics 추가
+        const { title, artist, date, composer, genre, lyrics } = req.body; // <-- 1. lyrics 추가
         const src = path.join('music-library', req.file.filename).replace(/\\/g, "/");
         
-        const song = await Song.create({ title, artist, date, composer, src, lyrics }); // <-- 2. lyrics 추가
+        const song = await Song.create({ title, artist, date, composer, genre, src, lyrics }); // <-- 2. lyrics 추가
         res.status(201).json(song);
     } catch (error) {
         console.error(error);
@@ -204,6 +204,26 @@ app.delete('/api/playlists/:playlistId/songs/:songId', async (req, res) => {
         res.status(500).send("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
     }
 });
+// server.js 에 추가
+
+// GET /api/genres : 모든 노래에서 중복 없는 장르 목록을 가져옵니다.
+app.get('/api/genres', async (req, res) => {
+    try {
+        // Song 테이블에서 'genre' 컬럼만 가져오되, 중복된 값은 제거합니다.
+        const genres = await Song.findAll({
+            attributes: ['genre'],
+            group: ['genre']
+        });
+        // 결과가 [{ genre: 'Ballad' }, { genre: 'Rock' }] 형태로 나오므로,
+        // ['Ballad', 'Rock'] 형태로 바꿔서 보내줍니다.
+        const genreList = genres.map(item => item.genre).filter(Boolean); // null 값 제거
+        res.json(genreList);
+    } catch (error) {
+        res.status(500).send("장르 목록을 가져오는 중 오류가 발생했습니다.");
+    }
+});
+
+
 // --- 서버 시작 및 초기 데이터 입력 ---
 app.listen(PORT, async () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);

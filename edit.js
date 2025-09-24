@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         artistInput.value = song.artist;
         dateInput.value = song.date;
         composerInput.value = song.composer;
+        document.getElementById('genre').value = song.genre || ''; // <-- 장르 채우기 추가
         srcInput.value = song.src;
         document.getElementById('lyrics').value = song.lyrics || ''; // <-- 가사 채우기 추가
 
@@ -42,6 +43,7 @@ form.addEventListener('submit', async function(event) {
         artist: artistInput.value,
         date: dateInput.value,
         composer: composerInput.value,
+        genre: document.getElementById('genre').value, // <-- 장르 보내기 추가
         src: srcInput.value, 
         lyrics: document.getElementById('lyrics').value // <-- 가사 보내기 추가
     };
